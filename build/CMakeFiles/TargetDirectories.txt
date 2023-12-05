@@ -1,0 +1,9 @@
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/Experimental.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/Nightly.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/Continuous.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/NightlyMemoryCheck.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/imageSharpening.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/PACKAGE.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/RUN_TESTS.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Admin/Desktop/imageSharpening/build/CMakeFiles/ZERO_CHECK.dir
