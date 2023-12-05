@@ -473,10 +473,10 @@ int main() {
     cin >> kRescaleFactor;
 
     // Check if the input is valid
-    if (fmod(kRescaleFactor, 4.0) != 0) {
-        cout << "Invalid rescale factor. It must be divided by 4." << endl;
-        return -1;
-    }
+    // if (fmod(kRescaleFactor, 4.0) != 0) {
+    //     cout << "Invalid rescale factor. It must be divided by 4." << endl;
+    //     return -1;
+    // }
 
     Mat rescaledMat;
     resize(inputImage, rescaledMat, Size(0, 0), kRescaleFactor, kRescaleFactor);
