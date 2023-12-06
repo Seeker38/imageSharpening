@@ -334,7 +334,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\Admin\Desktop\imageSharpening\cpu.cpp" />
+    <ClCompile Include="C:\Users\Admin\Desktop\imageSharpening\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Admin\Desktop\imageSharpening\build\ZERO_CHECK.vcxproj">

@@ -18,7 +18,9 @@ enable_language(CUDA)
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--std=c++17;)    
 
 add_executable(imageSharpening  
-    cpu.cpp)
+    # cpu.cpp
+    # gpu.cu
+    main.cpp)
 
 target_link_libraries(imageSharpening ${OpenCV_LIBS} )
 

@@ -337,69 +337,9 @@ float* OvershootControl( float* preliminarySharpened, float* original, int width
 }
 
 
-// int main() {
-//     // Read the input image
-//     cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.jpg", cv::IMREAD_GRAYSCALE);
-
-//     if (inputImage.empty()) {
-//         cerr << "Error: Couldn't read the image." << endl;
-//         return -1;
-//     }
-
-//     // Get image dimensions
-//     int width = inputImage.cols;
-//     int height = inputImage.rows;
-
-//     // Convert Mat to a 1D float array
-//     float* inputArray = new float[width * height];
-//     for (int row = 0; row < height; ++row) {
-//         for (int col = 0; col < width; ++col) {
-//             inputArray[row * width + col] = static_cast<float>(inputImage.at<uchar>(row, col));
-//         }
-//     }
-
-//     // Process the image
-//     float* h_downscaled = downscaleImageCPU(inputArray, width, height);
-
-//     // // Call the upscaleOperationCPU function
-//     float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height);
-
-//     float* h_pError = calculatePError(inputArray, h_upscaled, width, height);
-//     float* h_pEdge =SobelOperator(inputArray, width, height);
-
-//     float mean = CalculateMean(h_pEdge, width, height);
-
-//     float lightStrength = 0.125f;
-//     float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength);
-//     float* h_finalSharpened = OvershootControl( h_preliminary, inputArray, width, height);
-
-//     // Convert the output to a Mat
-
-//     cv::Mat outputImage(height, width, CV_8U);
-//     for (int row = 0; row < height; ++row) {
-//         for (int col = 0; col < width; ++col) {
-//             outputImage.at<uchar>(row, col) = static_cast<uchar>(h_downscaled[row * height + col]);
-//         }
-//     }
-
-//     // Save the result
-//     cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/image.jpg", outputImage);
-
-//     // Release memory
-//     delete[] inputArray;
-//     delete[] h_downscaled;
-//     delete[] h_upscaled;
-//     delete[] h_pError;
-//     delete[] h_pEdge;
-//     delete[] h_preliminary;
-//     delete[] h_finalSharpened;
-
-//     return 0;
-// }
-
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.jpg", cv::IMREAD_GRAYSCALE);
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.png", cv::IMREAD_GRAYSCALE);
 
     if (inputImage.empty()) {
         std::cerr << "Error: Unable to read the input image." << std::endl;
@@ -457,8 +397,8 @@ int main() {
     }
 
     // Save the upscaled image to a new file
-    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/upscaledImage.jpg", sharpenedImage);
-    std::cout << "Sharpened and upscaled image saved as sharpened_image.jpg" << std::endl;
+    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/upscaledImage.png", sharpenedImage);
+    std::cout << "Sharpened and upscaled image saved as sharpened_image.png" << std::endl;
 
     // Clean up memory
     delete[] inputArray;
