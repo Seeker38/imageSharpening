@@ -362,6 +362,15 @@ void OvershootControlKernel(float* finalSharpened, float* preliminarySharpened, 
     }
 }
 
+#include <chrono>
+
+void checkCudaErrors(cudaError_t result) {
+    if (result != cudaSuccess) {
+        std::cerr << "CUDA error: " << cudaGetErrorString(result) << std::endl;
+        exit(-1);
+    }
+}
+
 void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
     // Allocate device memory
     float *d_input, *d_downscaled, *d_upscaled, *d_pError, *d_pEdge, *d_preliminary, *d_finalSharpened;
@@ -384,36 +393,68 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
     // Copy input data to device
     cudaMemcpy(d_input, input.ptr<float>(), inputSize, cudaMemcpyHostToDevice);
 
+    cudaEvent_t start, stop;
+    float elapsedTime;
+
+    // Create events for timing
+    checkCudaErrors(cudaEventCreate(&start));
+    checkCudaErrors(cudaEventCreate(&stop));
+
+    // Record the start time
+    checkCudaErrors(cudaEventRecord(start, 0));
+        
     // Set grid and block dimensions for downscale
     dim3 blockDimDownscale(BLOCK_SIZE, BLOCK_SIZE);
     dim3 gridDimDownscale((input.cols + blockDimDownscale.x - 1) / blockDimDownscale.x, (input.rows + blockDimDownscale.y - 1) / blockDimDownscale.y);
 
     // Launch the downscale kernel
     downscaleImageKernel<<<gridDimDownscale, blockDimDownscale>>>(d_input, d_downscaled, input.cols, input.rows);
+    
+    // Record the stop time
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+
+    // Calculate and print the elapsed time for each function
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "Downscale Time: " << elapsedTime << " ms" << std::endl;
+    
 
     // Set grid and block dimensions for upscale
     dim3 blockDimUpscale(BLOCK_SIZE, BLOCK_SIZE);
     dim3 gridDimUpscale((input.cols  + blockDimUpscale.x - 1) / blockDimUpscale.x, (input.rows  + blockDimUpscale.y - 1) / blockDimUpscale.y);
 
     // Launch the upscale kernel
+    checkCudaErrors(cudaEventRecord(start, 0));
     UpscaleOperationKernel<<<gridDimUpscale, blockDimUpscale>>>(d_downscaled, d_upscaled, input.cols, input.rows);
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "Upscale Time: " << elapsedTime << " ms" << std::endl;
+
 
     // Set grid and block dimensions for CalculatePError
     dim3 blockDimCalculatePError(BLOCK_SIZE, BLOCK_SIZE);
     dim3 gridDimCalculatePError((input.cols + blockDimCalculatePError.x - 1) / blockDimCalculatePError.x, (input.rows + blockDimCalculatePError.y - 1) / blockDimCalculatePError.y);
 
     // Launch the CalculatePError kernel
+    checkCudaErrors(cudaEventRecord(start, 0));
     CalculatePError<<<gridDimCalculatePError, blockDimCalculatePError>>>(d_input, d_upscaled, d_pError, input.cols, input.rows);
-
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "d_pError Time: " << elapsedTime << " ms" << std::endl;    
 
     // Set grid and block dimensions for SobelOperatorKernel
     dim3 blockDimSobel(BLOCK_SIZE, BLOCK_SIZE);
     dim3 gridDimSobel((input.cols + blockDimSobel.x - 1) / blockDimSobel.x, (input.rows + blockDimSobel.y - 1) / blockDimSobel.y);
 
     // Launch the SobelOperatorKernel kernel
+    checkCudaErrors(cudaEventRecord(start, 0));
     SobelOperatorKernel<<<gridDimSobel, blockDimSobel>>>(d_input, d_pEdge, input.cols, input.rows);
-
-
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "sobel Time: " << elapsedTime << " ms" << std::endl;    
 
     // Allocate host memory for the mean calculation
     float* h_pEdge = new float[input.cols * input.rows];
@@ -434,7 +475,12 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
 
     float lightStrength = 0.205f;
     // Launch the preliminarySharpenedKernel kernel
+    checkCudaErrors(cudaEventRecord(start, 0));
     preliminarySharpenedKernel<<<gridDimPreliminary, blockDimPreliminary>>>(d_preliminary, d_pEdge, d_pError, d_upscaled, input.cols, input.rows, mean, lightStrength);
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "Preliminary Time: " << elapsedTime << " ms" << std::endl;  
 
 
     // Set grid and block dimensions for OvershootControl
@@ -442,12 +488,21 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
     dim3 gridDimOvershootControl((input.cols + blockDimOvershootControl.x - 1) / blockDimOvershootControl.x, (input.rows + blockDimOvershootControl.y - 1) / blockDimOvershootControl.y);
 
     // Launch the OvershootControlKernel kernel
+    checkCudaErrors(cudaEventRecord(start, 0));
     OvershootControlKernel<<<gridDimOvershootControl, blockDimOvershootControl>>>(d_finalSharpened, d_preliminary, d_input, input.cols, input.rows);
-
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+    std::cout << "OvershootControl Time: " << elapsedTime << " ms" << std::endl;  
+    
     // Copy the final result back to host
     output.create(input.rows, input.cols, CV_32F);
     cudaMemcpy(output.ptr<float>(), d_finalSharpened, finalSharpenedSize, cudaMemcpyDeviceToHost);
 
+
+    // Destroy events
+    checkCudaErrors(cudaEventDestroy(start));
+    checkCudaErrors(cudaEventDestroy(stop));
 
     // Free device memory
     cudaFree(d_input);
@@ -458,10 +513,106 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
     cudaFree(d_preliminary);
     cudaFree(d_finalSharpened);
 }
+// void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
+//     // Allocate device memory
+//     float *d_input, *d_downscaled, *d_upscaled, *d_pError, *d_pEdge, *d_preliminary, *d_finalSharpened;
+//     size_t inputSize = input.rows * input.cols * sizeof(float);
+//     size_t downscaledSize = (input.rows / 4) * (input.cols / 4) * sizeof(float);
+//     size_t upscaledSize = inputSize;
+//     size_t pErrorSize = inputSize;
+//     size_t pEdgeSize = inputSize;    
+//     size_t preliminarySize = inputSize;
+//     size_t finalSharpenedSize = inputSize;    
+
+//     cudaMalloc(&d_input, inputSize);
+//     cudaMalloc(&d_downscaled, downscaledSize);
+//     cudaMalloc(&d_upscaled, upscaledSize);
+//     cudaMalloc(&d_pError, pErrorSize);
+//     cudaMalloc(&d_pEdge, pEdgeSize);
+//     cudaMalloc(&d_preliminary, preliminarySize);
+//     cudaMalloc(&d_finalSharpened, finalSharpenedSize);
+
+//     // Copy input data to device
+//     cudaMemcpy(d_input, input.ptr<float>(), inputSize, cudaMemcpyHostToDevice);
+
+//     // Set grid and block dimensions for downscale
+//     dim3 blockDimDownscale(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimDownscale((input.cols + blockDimDownscale.x - 1) / blockDimDownscale.x, (input.rows + blockDimDownscale.y - 1) / blockDimDownscale.y);
+
+//     // Launch the downscale kernel
+//     downscaleImageKernel<<<gridDimDownscale, blockDimDownscale>>>(d_input, d_downscaled, input.cols, input.rows);
+
+//     // Set grid and block dimensions for upscale
+//     dim3 blockDimUpscale(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimUpscale((input.cols  + blockDimUpscale.x - 1) / blockDimUpscale.x, (input.rows  + blockDimUpscale.y - 1) / blockDimUpscale.y);
+
+//     // Launch the upscale kernel
+//     UpscaleOperationKernel<<<gridDimUpscale, blockDimUpscale>>>(d_downscaled, d_upscaled, input.cols, input.rows);
+
+//     // Set grid and block dimensions for CalculatePError
+//     dim3 blockDimCalculatePError(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimCalculatePError((input.cols + blockDimCalculatePError.x - 1) / blockDimCalculatePError.x, (input.rows + blockDimCalculatePError.y - 1) / blockDimCalculatePError.y);
+
+//     // Launch the CalculatePError kernel
+//     CalculatePError<<<gridDimCalculatePError, blockDimCalculatePError>>>(d_input, d_upscaled, d_pError, input.cols, input.rows);
+
+
+//     // Set grid and block dimensions for SobelOperatorKernel
+//     dim3 blockDimSobel(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimSobel((input.cols + blockDimSobel.x - 1) / blockDimSobel.x, (input.rows + blockDimSobel.y - 1) / blockDimSobel.y);
+
+//     // Launch the SobelOperatorKernel kernel
+//     SobelOperatorKernel<<<gridDimSobel, blockDimSobel>>>(d_input, d_pEdge, input.cols, input.rows);
+
+
+
+//     // Allocate host memory for the mean calculation
+//     float* h_pEdge = new float[input.cols * input.rows];
+
+//     // Copy the result from d_pEdge to the host
+//     cudaMemcpy(h_pEdge, d_pEdge, pEdgeSize, cudaMemcpyDeviceToHost);
+
+//     // Calculate the mean using the host array
+//     float mean = CalculateMean(h_pEdge, input.cols, input.rows);
+
+//     // Free the host array
+//     delete[] h_pEdge;
+
+//     // Set grid and block dimensions for preliminarySharpened
+//     dim3 blockDimPreliminary(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimPreliminary((input.cols + blockDimPreliminary.x - 1) / blockDimPreliminary.x, (input.rows + blockDimPreliminary.y - 1) / blockDimPreliminary.y);
+
+
+//     float lightStrength = 0.205f;
+//     // Launch the preliminarySharpenedKernel kernel
+//     preliminarySharpenedKernel<<<gridDimPreliminary, blockDimPreliminary>>>(d_preliminary, d_pEdge, d_pError, d_upscaled, input.cols, input.rows, mean, lightStrength);
+
+
+//     // Set grid and block dimensions for OvershootControl
+//     dim3 blockDimOvershootControl(BLOCK_SIZE, BLOCK_SIZE);
+//     dim3 gridDimOvershootControl((input.cols + blockDimOvershootControl.x - 1) / blockDimOvershootControl.x, (input.rows + blockDimOvershootControl.y - 1) / blockDimOvershootControl.y);
+
+//     // Launch the OvershootControlKernel kernel
+//     OvershootControlKernel<<<gridDimOvershootControl, blockDimOvershootControl>>>(d_finalSharpened, d_preliminary, d_input, input.cols, input.rows);
+
+//     // Copy the final result back to host
+//     output.create(input.rows, input.cols, CV_32F);
+//     cudaMemcpy(output.ptr<float>(), d_finalSharpened, finalSharpenedSize, cudaMemcpyDeviceToHost);
+
+
+//     // Free device memory
+//     cudaFree(d_input);
+//     cudaFree(d_downscaled);
+//     cudaFree(d_upscaled);
+//     cudaFree(d_pError);
+//     cudaFree(d_pEdge);
+//     cudaFree(d_preliminary);
+//     cudaFree(d_finalSharpened);
+// }
 
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.jpg", cv::IMREAD_GRAYSCALE);
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/lena.png", cv::IMREAD_GRAYSCALE);
 
     if (inputImage.empty()) {
         std::cerr << "Error: Could not read the input image." << std::endl;
@@ -494,7 +645,7 @@ int main() {
     sharpenedUpscaledOutput.convertTo(sharpenedUpscaledOutputUint8, CV_8U);
 
     // Save the result
-    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.jpg", sharpenedUpscaledOutputUint8);
+    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png", sharpenedUpscaledOutputUint8);
 
     std::cout << "Sharpened and upscaled image saved as sharpened_image.jpg" << std::endl;
 

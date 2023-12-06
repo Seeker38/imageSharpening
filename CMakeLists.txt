@@ -20,7 +20,8 @@ set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--std=c++17;)
 add_executable(imageSharpening  
     # cpu.cpp
     # gpu.cu
-    main.cpp)
+    mainCompare.cpp
+    )
 
 target_link_libraries(imageSharpening ${OpenCV_LIBS} )
 

@@ -336,10 +336,24 @@ float* OvershootControl( float* preliminarySharpened, float* original, int width
     return finalSharpened;
 }
 
+#include <chrono>
+
+// Function to measure the runtime of another function
+template<typename Func, typename... Args>
+long long measureRuntime(Func func, Args&&... args) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    func(std::forward<Args>(args)...);
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+    return duration.count();
+}
 
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.png", cv::IMREAD_GRAYSCALE);
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/baboon1.png", cv::IMREAD_GRAYSCALE);
 
     if (inputImage.empty()) {
         std::cerr << "Error: Unable to read the input image." << std::endl;
@@ -374,18 +388,34 @@ int main() {
 
     // Downscale the image
     float* h_downscaled = downscaleImageCPU(inputArray, width, height);
+    std::cout << "Downscale Time: "
+              << measureRuntime(downscaleImageCPU, inputArray, width, height) << " ms" << std::endl;
 
     // Upscale the downscaled image
     float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height);
+    std::cout << "Upscale Time: "
+              << measureRuntime(upscaleOperationCPU, h_downscaled, width, height) << " ms" << std::endl;
 
     float* h_pError = calculatePError(inputArray, h_upscaled, width, height);
+    std::cout << "d_pError Time: "
+              << measureRuntime(calculatePError, inputArray, h_upscaled, width, height) << " ms" << std::endl;
+
+
     float* h_pEdge =SobelOperator(inputArray, width, height);
+    std::cout << "sobel Time: "
+              << measureRuntime(calculatePError, inputArray, h_upscaled, width, height) << " ms" << std::endl;
+
 
     float mean = CalculateMean(h_pEdge, width, height);
 
     float lightStrength = 0.205f;
     float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength);
+    std::cout << "Preliminary Time: "
+              << measureRuntime(preliminarySharpened, h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength) << " ms" << std::endl;
+
     float* h_finalSharpened = OvershootControl( h_preliminary, inputArray, width, height);
+    std::cout << "OvershootControl Time: "
+              << measureRuntime(OvershootControl, h_preliminary, inputArray, width, height) << " ms" << std::endl;
 
 
     // Convert the upscaled array back to a 2D matrix
@@ -397,7 +427,7 @@ int main() {
     }
 
     // Save the upscaled image to a new file
-    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/upscaledImage.png", sharpenedImage);
+    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png", sharpenedImage);
     std::cout << "Sharpened and upscaled image saved as sharpened_image.png" << std::endl;
 
     // Clean up memory
