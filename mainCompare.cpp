@@ -60,6 +60,18 @@ cv::Scalar getMSSIM(const cv::Mat& i1, const cv::Mat& i2) {
     return mssim;
 }
 
+double calculateVIFP(const cv::Mat& image1, const cv::Mat& image2) {
+    cv::Mat diff;
+    cv::absdiff(image1, image2, diff);
+
+    cv::Scalar mean_diff, stddev_diff;
+    cv::meanStdDev(diff, mean_diff, stddev_diff);
+
+    double vifp = stddev_diff[0] * stddev_diff[0];
+    return vifp;
+}
+
+
 int main() {
     // Load images
     cv::Mat image1 = cv::imread("C:/Users/Admin/Desktop/imageSharpening/aircraft.png");
@@ -77,6 +89,9 @@ int main() {
     // Calculate SSIM
     cv::Scalar ssim = getMSSIM(image1, image2);
     std::cout << "SSIM: " << ssim.val[0] << std::endl;
+
+    double vifp = calculateVIFP(image1, image2);
+    std::cout << "VIFP (Pixel Domain): " << vifp << std::endl;
 
     return 0;
 }
