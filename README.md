@@ -2,11 +2,7 @@
 
 Project that sharpen images using cuda and c++
 
-=========================================================
-= fast, and multi-core support image comparison =
-=							=
-= Program and Library by : Hector Truong		=
-=========================================================
+
 
 ## Building project
 
@@ -32,10 +28,10 @@ File (make sure you change the input and output path):
 2. Run code by CPu --> cpu.cpp
 3. Run images comparison --> mainCompare.cpp 
 
-Make the project using make
+CMake the project using Cmake accorfing to your c/c++ version and CUDA_ARCHITECTURES
 
 ```bash
-make clean && make
+set_property(TARGET my_target PROPERTY "${CUDA_ARCH_LIST}")
 ```
 
 
