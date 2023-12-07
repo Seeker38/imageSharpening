@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
+#include <chrono>
 
 using namespace cv;
 using namespace std;
@@ -336,7 +337,7 @@ float* OvershootControl( float* preliminarySharpened, float* original, int width
     return finalSharpened;
 }
 
-#include <chrono>
+
 
 // Function to measure the runtime of another function
 template<typename Func, typename... Args>
@@ -353,7 +354,7 @@ long long measureRuntime(Func func, Args&&... args) {
 
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/baboon1.png", cv::IMREAD_GRAYSCALE);
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/aircraft.png", cv::IMREAD_GRAYSCALE);
 
     if (inputImage.empty()) {
         std::cerr << "Error: Unable to read the input image." << std::endl;

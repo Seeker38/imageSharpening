@@ -62,7 +62,7 @@ cv::Scalar getMSSIM(const cv::Mat& i1, const cv::Mat& i2) {
 
 int main() {
     // Load images
-    cv::Mat image1 = cv::imread("C:/Users/Admin/Desktop/imageSharpening/baboon1.png");
+    cv::Mat image1 = cv::imread("C:/Users/Admin/Desktop/imageSharpening/aircraft.png");
     cv::Mat image2 = cv::imread("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png");
 
     if (image1.empty() || image2.empty()) {

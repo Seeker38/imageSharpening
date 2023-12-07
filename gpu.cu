@@ -6,6 +6,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/cuda.hpp>
+#include <chrono>
 
 #define BLOCK_SIZE 16
 
@@ -244,8 +245,6 @@ void UpscaleOperationKernel(float* downscaled, float* upscaled, int width, int h
 
     // Upscale the main body
 
-        // UpscaleBodyKernel(downscaled, upscaled, width, height);
-        // upscaled[row * width + col] = 0;
     UpscaleBodyKernel(downscaled, upscaled, static_cast<int>(width / 4), static_cast<int>(height /4));
 
     
@@ -305,14 +304,43 @@ void preliminarySharpenedKernel(float* result, float* pEdge, float* pError, floa
         // Apply brightness adjustment to pEdge array 
         pEdge[row * width + col] = pEdge[row * width + col] * lightStrength - mean;
 
-        // for (int k = 0; k < width; ++k) {
-        //     sum += pError[row * width + k] *  pEdge[k * width + col];
-        // }
         result[row * width + col] = (pError[row * width + col] + pEdge[row * width + col])* (1.0f+ lightStrength) + upscaleMatrix[row * width + col];        
 
         
     }
 }
+
+// __global__ 
+// void preliminarySharpenedKernel(float* result, float* pEdge, float* pError, float* upscaleMatrix, int width, int height, float mean, float lightStrength) {
+//     int row = blockIdx.y * blockDim.y + threadIdx.y;
+//     int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+//     // Define the 1D sharpening filter
+//     const float sharpeningFilter[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
+
+//     float sum = 0;    
+//     if (row < height && col < width) {
+//         // Apply brightness adjustment to pEdge array 
+//         pEdge[row * width + col] = pEdge[row * width + col] * lightStrength - mean;
+
+//         // Combine the sharpened result with pEdge and upscaleMatrix        
+//         result[row * width + col] = (pError[row * width + col] + pEdge[row * width + col]) * (1.0f + lightStrength) + upscaleMatrix[row * width + col];    
+//        // Apply the sharpening filter to the result array
+//         for (int i = -1; i <= 1; ++i) {
+//             for (int j = -1; j <= 1; ++j) {
+//                 int neighborRow = row + i;
+//                 int neighborCol = col + j;
+
+//                 // Check if the neighbor is within the image bounds
+//                 if (neighborRow >= 0 && neighborRow < height && neighborCol >= 0 && neighborCol < width) {
+//                     int filterIndex = (i + 1) * 3 + (j + 1);
+//                     result[neighborRow * width + neighborCol] += result[neighborRow * width + neighborCol] * sharpeningFilter[filterIndex];
+//                 }
+//             }
+//         }
+    
+//     }
+// }
 
 
 // Overshoot control kernel using the max values array
@@ -362,7 +390,7 @@ void OvershootControlKernel(float* finalSharpened, float* preliminarySharpened, 
     }
 }
 
-#include <chrono>
+
 
 void checkCudaErrors(cudaError_t result) {
     if (result != cudaSuccess) {
@@ -404,7 +432,7 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
     checkCudaErrors(cudaEventRecord(start, 0));
         
     // Set grid and block dimensions for downscale
-    dim3 blockDimDownscale(BLOCK_SIZE, BLOCK_SIZE);
+     
     dim3 gridDimDownscale((input.cols + blockDimDownscale.x - 1) / blockDimDownscale.x, (input.rows + blockDimDownscale.y - 1) / blockDimDownscale.y);
 
     // Launch the downscale kernel
@@ -612,7 +640,7 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
 
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/lena.png", cv::IMREAD_GRAYSCALE);
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/treeNew.png", cv::IMREAD_GRAYSCALE);
 
     if (inputImage.empty()) {
         std::cerr << "Error: Could not read the input image." << std::endl;
