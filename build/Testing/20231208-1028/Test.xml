@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="Win32-MSBuild"
+	BuildStamp="20231208-1028-Experimental"
+	Name="LAPTOP-BVBOE0F7"
+	Generator="ctest-3.26.5"
+	CompilerName="C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx86/x64/cl.exe"
+	CompilerVersion="19.37.32824.0"
+	OSName="Windows"
+	Hostname="LAPTOP-BVBOE0F7"
+	OSRelease=" Personal"
+	OSVersion=" (Build 22621)"
+	OSPlatform="AMD64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="15"
+	ModelID="0"
+	ProcessorCacheSize="64"
+	NumberOfLogicalCPU="16"
+	NumberOfPhysicalCPU="8"
+	TotalVirtualMemory="23952"
+	TotalPhysicalMemory="16253"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2894"
+	>
+	<Testing>
+		<StartDateTime>Dec 09 00:23 SE Asia Standard Time</StartDateTime>
+		<StartTestTime>1702056183</StartTestTime>
+		<TestList/>
+		<EndDateTime>Dec 09 00:23 SE Asia Standard Time</EndDateTime>
+		<EndTestTime>1702056183</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>
