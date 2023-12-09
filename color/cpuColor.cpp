@@ -293,15 +293,15 @@ float* SobelOperator(float* input, int width, int height, int channels) {
                     pEdge[(row * width + col)* channels + channel] = 0.0;
                 } else {
                     // Filling the body using Sobel operator
-                    float sobelX = -1.0 * input[((row - 1) * width + (col - 1))* channels + channel] + 0.0 * input[((row - 1) * width + col)* channels + channel] + 1.0 * input[((row - 1) * width + (col + 1))* channels + channel]
-                                -2.0 * input[(row * width + (col - 1))* channels + channel] + 0.0 * input[(row * width + col)* channels + channel] + 2.0 * input[(row * width + (col + 1))* channels + channel]
-                                -1.0 * input[((row + 1) * width + (col - 1))* channels + channel] + 0.0 * input[((row + 1) * width + col)* channels + channel] + 1.0 * input[((row + 1) * width + (col + 1))* channels + channel];
+                    float sobelX = -1.0f * input[((row - 1) * width + (col - 1))* channels + channel] + 0.0f * input[((row - 1) * width + col)* channels + channel] + 1.0f * input[((row - 1) * width + (col + 1))* channels + channel]
+                                -2.0f * input[(row * width + (col - 1))* channels + channel] + 0.0f * input[(row * width + col)* channels + channel] + 2.0f * input[(row * width + (col + 1))* channels + channel]
+                                -1.0f * input[((row + 1) * width + (col - 1))* channels + channel] + 0.0f * input[((row + 1) * width + col)* channels + channel] + 1.0f * input[((row + 1) * width + (col + 1))* channels + channel];
 
-                    float sobelY = 1.0 * input[((row - 1) * width + (col + 1))* channels + channel] + 2.0 * input[(row * width + (col + 1))* channels + channel] + 1.0 * input[((row + 1) * width + (col + 1))* channels + channel]
-                                -1.0 * input[((row - 1) * width + (col - 1))* channels + channel] - 2.0 * input[(row * width + (col - 1))* channels + channel] - 1.0 * input[((row + 1) * width + (col - 1))* channels + channel];
+                    float sobelY = 1.0f * input[((row - 1) * width + (col + 1))* channels + channel] + 2.0f * input[(row * width + (col + 1))* channels + channel] + 1.0f * input[((row + 1) * width + (col + 1))* channels + channel]
+                                -1.0f * input[((row - 1) * width + (col - 1))* channels + channel] - 2.0f * input[(row * width + (col - 1))* channels + channel] - 1.0f * input[((row + 1) * width + (col - 1))* channels + channel];
 
                     // pEdge[row * width + col] = fabs(sobelX) + fabs(sobelY); // Absolute sum of horizontal and vertical derivatives
-                    pEdge[(row * width + col)* channels + channel] = sqrt(pow(sobelX, 2) + pow(sobelY, 2));
+                    pEdge[(row * width + col)* channels + channel] = static_cast<float>(sqrt(pow(sobelX, 2) + pow(sobelY, 2)));
                 }
             }
         }
@@ -425,51 +425,51 @@ int main() {
     float* inputArray = new float[width * height * channels];
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
-            cv::Vec3b pixel = rescaledMat.at<cv::Vec3b>(row, col);
-            for (int channel = 0; channel < channels; ++channel) {
-                inputArray[(row * width + col) * channels + channel] = static_cast<float>(pixel[channel]);
+            Vec3b intensity = rescaledMat.at<Vec3b>(row, col);
+            for (int c = 0; c < channels; ++c) {
+                inputArray[(row * width + col) * channels + c] = static_cast<float>(intensity[c]);
             }
         }
     }
 
     // Downscale the image
     float* h_downscaled = downscaleImageCPU(inputArray, width, height,channels);
-    std::cout << "Downscale Time: "
-              << measureRuntime(downscaleImageCPU, inputArray, width, height,channels) << " ms" << std::endl;
+    // std::cout << "Downscale Time: "
+    //           << measureRuntime(downscaleImageCPU, inputArray, width, height,channels) << " ms" << std::endl;
 
-    // Upscale the downscaled image
-    float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height,channels);
-    std::cout << "Upscale Time: "
-              << measureRuntime(upscaleOperationCPU, h_downscaled, width, height,channels) << " ms" << std::endl;
+    // // Upscale the downscaled image
+    // float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height,channels);
+    // std::cout << "Upscale Time: "
+    //           << measureRuntime(upscaleOperationCPU, h_downscaled, width, height,channels) << " ms" << std::endl;
 
-    float* h_pError = calculatePError(inputArray, h_upscaled, width, height,channels);
-    std::cout << "d_pError Time: "
-              << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
-
-
-    float* h_pEdge =SobelOperator(inputArray, width, height,channels);
-    std::cout << "sobel Time: "
-              << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
+    // float* h_pError = calculatePError(inputArray, h_upscaled, width, height,channels);
+    // std::cout << "d_pError Time: "
+    //           << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
 
 
-    float mean = CalculateMean(h_pEdge, width, height,channels);
+    // float* h_pEdge =SobelOperator(inputArray, width, height,channels);
+    // std::cout << "sobel Time: "
+    //           << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
 
-    float lightStrength = 0.205f;
-    float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels);
-    std::cout << "Preliminary Time: "
-              << measureRuntime(preliminarySharpened, h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels) << " ms" << std::endl;
 
-    float* h_finalSharpened = OvershootControl( h_preliminary, inputArray, width, height,channels);
-    std::cout << "OvershootControl Time: "
-              << measureRuntime(OvershootControl, h_preliminary, inputArray, width, height,channels) << " ms" << std::endl;
+    // float mean = CalculateMean(h_pEdge, width, height,channels);
+
+    // float lightStrength = 0.205f;
+    // float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels);
+    // std::cout << "Preliminary Time: "
+    //           << measureRuntime(preliminarySharpened, h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels) << " ms" << std::endl;
+
+    // float* h_finalSharpened = OvershootControl( h_preliminary, inputArray, width, height,channels);
+    // std::cout << "OvershootControl Time: "
+    //           << measureRuntime(OvershootControl, h_preliminary, inputArray, width, height,channels) << " ms" << std::endl;
 
 
     // Convert the upscaled array back to a 2D matrix
-    cv::Mat sharpenedImage(height, width, CV_8U);
+    cv::Mat sharpenedImage(height, width, CV_8UC3);
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
             for (int channel = 0; channel < channels; ++channel) {
-                sharpenedImage.at<cv::Vec3b>(row, col)[channel] = static_cast<uchar>(h_finalSharpened[(row * width + col) * channels + channel]);
+                sharpenedImage.at<cv::Vec3b>(row, col)[channel] = static_cast<uchar>(h_downscaled[(row * width + col) * channels + channel]);
             }
         }
     }
@@ -481,11 +481,11 @@ int main() {
     // Clean up memory
     delete[] inputArray;
     delete[] h_downscaled;
-    delete[] h_upscaled;
-    delete[] h_pError;
-    delete[] h_pEdge;
-    delete[] h_preliminary;
-    delete[] h_finalSharpened;
+    // delete[] h_upscaled;
+    // delete[] h_pError;
+    // delete[] h_pEdge;
+    // delete[] h_preliminary;
+    // delete[] h_finalSharpened;
 
     return EXIT_SUCCESS;
 }

@@ -87,26 +87,36 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/opencv/opencv/build/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
-      <Optimization>Disabled</Optimization>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\opencv\opencv\build\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;CMAKE_INTDIR="Debug"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 -arch=native -Xcompiler="/EHsc -Zi -Ob0"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>Od</Optimization>
+      <Runtime>MDd</Runtime>
+      <RuntimeChecks>RTC1</RuntimeChecks>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
     <Midl>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
@@ -116,7 +126,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480d.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,26 +145,35 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/opencv/opencv/build/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <Optimization>MaxSpeed</Optimization>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\opencv\opencv\build\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 -arch=native -Xcompiler="/EHsc -Ob2"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
     <Midl>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
@@ -164,7 +183,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -183,26 +202,35 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/opencv/opencv/build/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <Optimization>MinSpace</Optimization>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\opencv\opencv\build\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 -arch=native -Xcompiler="/EHsc -Ob1"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O1</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
     <Midl>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
@@ -212,7 +240,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -231,25 +259,35 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/opencv/opencv/build/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <Optimization>MaxSpeed</Optimization>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\opencv\opencv\build\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 -arch=native -Xcompiler="/EHsc -Zi -Ob1"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
     <Midl>
       <AdditionalIncludeDirectories>D:\opencv\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
@@ -259,7 +297,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;D:\opencv\opencv\build\x64\vc16\lib\opencv_world480.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -334,7 +372,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\Admin\Desktop\imageSharpening\color\cpuColor.cpp" />
+    <CudaCompile Include="..\color\gpuColor.cu" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Admin\Desktop\imageSharpening\build\ZERO_CHECK.vcxproj">

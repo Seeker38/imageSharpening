@@ -607,7 +607,7 @@ int main() {
     // Save the result
     cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png", sharpenedUpscaledOutputUint8);
 
-    std::cout << "Sharpened and upscaled image saved as finalSharpened.jpg" << std::endl;
+    std::cout << "Sharpened and upscaled image saved as finalSharpened.png" << std::endl;
 
     return 0;
 }
