@@ -39,3 +39,5 @@ set_property(TARGET my_target PROPERTY "${CUDA_ARCH_LIST}")
 The code is based on 
 [https://www.researchgate.net/publication/307695773_Optimizing_Image_Sharpening_Algorithm_on_GPU](https://www.researchgate.net/publication/307695773_Optimizing_Image_Sharpening_Algorithm_on_GPU)
 
+## Set Block size, threads
+this code is based on RTX 2060 so i set default block size = 32. You can change accordingly based on this [Wiki](https://en.wikipedia.org/wiki/CUDA)
