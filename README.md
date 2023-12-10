@@ -24,9 +24,11 @@ Installation :
 
 
 File (make sure you change the input and output path):
-1. Run code by GPU --> gpu.cu
-2. Run code by CPu --> cpu.cpp
-3. Run images comparison --> mainCompare.cpp 
+1. Run code by GPU grayscale--> gpu.cu
+2. Run code by CPU grayscale--> cpu.cpp
+3. Run code by GPU color--> color/gpuColor.cu
+4. Run code by CPU color--> color/cpuColor.cpp
+5. Run images comparison --> mainCompare.cpp 
 
 CMake the project using Cmake accorfing to your c/c++ version and CUDA_ARCHITECTURES
 
