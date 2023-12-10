@@ -570,7 +570,7 @@ void sharpenAndUpscaleImage(const cv::Mat& input, cv::Mat& output) {
 
 int main() {
     // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/parralelComputing/color1.png");
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/color1.png");
 
     if (inputImage.empty()) {
         std::cerr << "Error: Could not read the input image." << std::endl;

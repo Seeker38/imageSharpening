@@ -11,7 +11,7 @@ float* downscaleImageCPU(float* input, int width, int height, int channels) {
     int newHeight = height / 4;
 
     // Allocate memory for the output matrix
-    float* output = new float[newWidth * newHeight];
+    float* output = new float[newWidth * newHeight * channels];
 
     for (int row = 0; row < newHeight; ++row) {
         for (int col = 0; col < newWidth; ++col) {
@@ -84,7 +84,7 @@ void UpscaleBody(float* downscaled, float* output, int width, int height, int ch
 float* upscaleOperationCPU(float* downscaled, int width, int height, int channels) {
 
     // Allocate memory for the output matrix
-    float* upscaled = new float[width * height];
+    float* upscaled = new float[width * height* channels];
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {    
             if (row == 0 && col % 4 == 0) {
@@ -271,7 +271,7 @@ float* upscaleOperationCPU(float* downscaled, int width, int height, int channel
 }
 
 float* calculatePError(float* original, float* upscaled, int width, int height, int channels) {
-    float* pError = new float[width * height];
+    float* pError = new float[width * height* channels];
 
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
@@ -284,7 +284,7 @@ float* calculatePError(float* original, float* upscaled, int width, int height, 
 }
 
 float* SobelOperator(float* input, int width, int height, int channels) {
-    float* pEdge = new float[width * height];
+    float* pEdge = new float[width * height* channels];
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
             for (int channel =0; channel< channels; ++channel){
@@ -320,7 +320,7 @@ float CalculateMean(float* pEdge, int width, int height, int channels) {
     return mean / static_cast<float>(width * height * channels);
 }
 float* preliminarySharpened(float* pEdge, float* pError, float* upscaleMatrix, int width, int height, float mean, float lightStrength, int channels) {
-    float* result = new float[width * height];
+    float* result = new float[width * height* channels];
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
             for (int channel=0; channel< channels; ++channel){
@@ -335,7 +335,7 @@ float* preliminarySharpened(float* pEdge, float* pError, float* upscaleMatrix, i
 }
 
 float* OvershootControl(float* preliminarySharpened, float* original, int width, int height, int channels) {
-    float* finalSharpened = new float[width * height];
+    float* finalSharpened = new float[width * height* channels];
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
             for (int channel =0; channel<channels ; ++channel){
@@ -359,8 +359,8 @@ float* OvershootControl(float* preliminarySharpened, float* original, int width,
 
                     // float oscMax = abs(maxVal - preliminarySharpened[row * width + col]);
                     // float oscMin = abs(preliminarySharpened[row * width + col] - minVal);
-                    float oscMax = (preliminarySharpened[(row * width + col)* channels + channel] - maxVal) + preliminarySharpened[(row * width + col)* channels + channel];
-                    float oscMin = (minVal - preliminarySharpened[(row * width + col)* channels + channel]) + preliminarySharpened[(row * width + col)* channels + channel];
+                    float oscMax = ((preliminarySharpened[(row * width + col)* channels + channel] - maxVal) + preliminarySharpened[(row * width + col)* channels + channel])* ( 0.775f);
+                    float oscMin = ((minVal - preliminarySharpened[(row * width + col)* channels + channel]) + preliminarySharpened[(row * width + col)* channels + channel])* ( 0.775f);
                     
 
                     // Adjust each element of the preliminarySharpened matrix
@@ -393,14 +393,16 @@ long long measureRuntime(Func func, Args&&... args) {
     return duration.count();
 }
 
+
 int main() {
-    // Read the input image
-    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/aircraft.png");
+    // Read the color image using OpenCV
+    cv::Mat inputImage = cv::imread("C:/Users/Admin/Desktop/imageSharpening/color1.png");
 
     if (inputImage.empty()) {
-        std::cerr << "Error: Unable to read the input image." << std::endl;
-        return EXIT_FAILURE;
+        std::cerr << "Error: Unable to read the image." << std::endl;
+        return -1;
     }
+
     double kRescaleFactor;
     cout << "Enter the rescale factor (VD: 0.75): ";
     cin >> kRescaleFactor;
@@ -413,79 +415,61 @@ int main() {
 
     Mat rescaledMat;
     resize(inputImage, rescaledMat, Size(0, 0), kRescaleFactor, kRescaleFactor);
-
-
-
-    // Get the width and height of the input image
+    
+    // Convert the image to a flattened float array
     int width = rescaledMat.cols;
     int height = rescaledMat.rows;
     int channels = rescaledMat.channels();
+    float* input = new float[width * height * channels];
 
-    // Convert the input image to a 1D array of floats
-    float* inputArray = new float[width * height * channels];
-    for (int row = 0; row < height; ++row) {
-        for (int col = 0; col < width; ++col) {
-            Vec3b intensity = rescaledMat.at<Vec3b>(row, col);
-            for (int c = 0; c < channels; ++c) {
-                inputArray[(row * width + col) * channels + c] = static_cast<float>(intensity[c]);
-            }
-        }
-    }
-
-    // Downscale the image
-    float* h_downscaled = downscaleImageCPU(inputArray, width, height,channels);
-    // std::cout << "Downscale Time: "
-    //           << measureRuntime(downscaleImageCPU, inputArray, width, height,channels) << " ms" << std::endl;
-
-    // // Upscale the downscaled image
-    // float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height,channels);
-    // std::cout << "Upscale Time: "
-    //           << measureRuntime(upscaleOperationCPU, h_downscaled, width, height,channels) << " ms" << std::endl;
-
-    // float* h_pError = calculatePError(inputArray, h_upscaled, width, height,channels);
-    // std::cout << "d_pError Time: "
-    //           << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
-
-
-    // float* h_pEdge =SobelOperator(inputArray, width, height,channels);
-    // std::cout << "sobel Time: "
-    //           << measureRuntime(calculatePError, inputArray, h_upscaled, width, height,channels) << " ms" << std::endl;
-
-
-    // float mean = CalculateMean(h_pEdge, width, height,channels);
-
-    // float lightStrength = 0.205f;
-    // float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels);
-    // std::cout << "Preliminary Time: "
-    //           << measureRuntime(preliminarySharpened, h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels) << " ms" << std::endl;
-
-    // float* h_finalSharpened = OvershootControl( h_preliminary, inputArray, width, height,channels);
-    // std::cout << "OvershootControl Time: "
-    //           << measureRuntime(OvershootControl, h_preliminary, inputArray, width, height,channels) << " ms" << std::endl;
-
-
-    // Convert the upscaled array back to a 2D matrix
-    cv::Mat sharpenedImage(height, width, CV_8UC3);
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width; ++col) {
             for (int channel = 0; channel < channels; ++channel) {
-                sharpenedImage.at<cv::Vec3b>(row, col)[channel] = static_cast<uchar>(h_downscaled[(row * width + col) * channels + channel]);
+                input[(row * width + col) * channels + channel] = static_cast<float>(rescaledMat.at<cv::Vec3b>(row, col)[channel]);
             }
         }
     }
 
-    // Save the upscaled image to a new file
-    cv::imwrite("C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png", sharpenedImage);
-    std::cout << "Sharpened and upscaled image saved as sharpened_image.png" << std::endl;
+    // Apply the downscaleImageCPU function
+    float* h_downscaled = downscaleImageCPU(input, width, height, channels);
+
+    // Upscale the downscaled image
+    float* h_upscaled = upscaleOperationCPU(h_downscaled, width, height,channels);
+
+    float* h_pError = calculatePError(input, h_upscaled, width, height,channels);
+
+    float* h_pEdge =SobelOperator(input, width, height,channels);
+
+    float mean = CalculateMean(h_pEdge, width, height,channels);
+
+    float lightStrength = 0.205f;
+    float* h_preliminary = preliminarySharpened( h_pEdge, h_pError, h_upscaled, width, height, mean, lightStrength,channels);
+
+    float* h_finalSharpened = OvershootControl( h_preliminary, input, width, height,channels);
+
+
+    // Display the original and downscaled images
+    cv::Mat sharpenedImage(height, width, CV_8UC3);
+
+    for (int row = 0; row < height; ++row) {
+        for (int col = 0; col < width; ++col) {
+            for (int channel = 0; channel < channels; ++channel) {
+                sharpenedImage.at<cv::Vec3b>(row, col)[channel] = static_cast<uchar>(h_finalSharpened[(row * width + col) * channels + channel]);
+            }
+        }
+    }
+
+    std::string outputPath = "C:/Users/Admin/Desktop/imageSharpening/finalSharpened.png";
+    cv::imwrite(outputPath, sharpenedImage);
 
     // Clean up memory
-    delete[] inputArray;
+    delete[] input;
     delete[] h_downscaled;
-    // delete[] h_upscaled;
-    // delete[] h_pError;
-    // delete[] h_pEdge;
-    // delete[] h_preliminary;
-    // delete[] h_finalSharpened;
+    delete[] h_upscaled;
+    delete[] h_pError;
+    delete[] h_pEdge;
+    delete[] h_preliminary;
+    delete[] h_finalSharpened;
 
-    return EXIT_SUCCESS;
+    return 0;
 }

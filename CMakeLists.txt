@@ -21,8 +21,8 @@ add_executable(imageSharpening
     # cpu.cpp
     # gpu.cu
     # mainCompare.cpp
-    color/gpuColor.cu
-    # color/cpuColor.cpp
+    # color/gpuColor.cu
+    color/cpuColor.cpp
     )
 
 target_link_libraries(imageSharpening ${OpenCV_LIBS} )
